@@ -1,0 +1,7 @@
+#!/bin/bash
+touch erl_crash.dump
+rm erl_crash.dump
+make clean compile
+erl -noshell -pa ./ebin -s woothttpd start 8000 -s init stop
+
+

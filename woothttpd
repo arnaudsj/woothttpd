@@ -1,0 +1,3 @@
+#!/bin/bash
+ERL_COMPILER_OPTIONS='[inline,native,{hipe,[o3]}]' make clean compile
+erl -noshell -pa ./ebin -s woothttpd start 8000 -s init stop
