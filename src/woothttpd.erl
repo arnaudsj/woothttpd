@@ -7,9 +7,9 @@ start([PortString]) ->
 	{ok, Listen} = gen_tcp:listen(Port, [binary,
 					 {reuseaddr, true}, 
 					 {packet, 0},
-					 {active, true},
+					 {active, once},
 					{backlog, 30}] ),
-	io:format("nanohttpd listening on ~p~n", [Port]),
+	io:format("woothttpd listening on ~p~n", [Port]),
 	seq_loop(Listen).
 
 %	{ok, Socket} = gen_tcp:accept(Listen),
@@ -27,11 +27,11 @@ loop(Socket) ->
 		{tcp, Socket, Bin} -> 
 			%io:format("Server received binary = ~p~n",[Bin]),
 			
-			ReplyBody = "<html><body><h1>Hello, Nano World!</h1></body></html>",
-			ReplyFull = io_lib:format("HTTP/1.1 200 OK\nDate: Sat, 12 Sep 2009 20:43:04 GMT\nContent-Type: text/html;charset=ISO-8859-1\nContent-Length: ~w\nServer: nanohttpd/0.1 (Unix)\nConnection: close \n\n~s\r~n\r~n", [size(list_to_binary(ReplyBody)), ReplyBody]),
+			ReplyBody = "<html>\n<head>\n<title>Welcome to nginx!</title>\n</head>\n<body bgcolor=\"white\" text=\"black\">\n<center><h1>Welcome to WootHTTPD!</h1></center>\n</body>\n</html>\n",
+			ReplyFull = io_lib:format("HTTP/1.1 200 OK\nDate: Sat, 12 Sep 2009 20:43:04 GMT\nContent-Type: text/html;charset=ISO-8859-1\nContent-Length: ~w\nServer: woothttpd/0.1 (Unix)\nConnection: close \n\n~s\r~n\r~n", [size(list_to_binary(ReplyBody)), ReplyBody]),
 			
 			%io:format("Server replying = ~p~n",[lists:flatten(ReplyFull)]),
-
+			inet:setopts(Socket, [{active, once}]),
 			gen_tcp:send(Socket, lists:flatten(ReplyFull)),
 			gen_tcp:close(Socket);
 			
